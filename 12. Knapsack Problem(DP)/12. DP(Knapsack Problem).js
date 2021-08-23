@@ -1,6 +1,5 @@
 const knapsack = function (weight, items) {
     
-    //sort item with biggest value per weight. 
     //remove item with heavier weight then weight of bag.
     //아래는 분할이 가능할때 필요하지, 해당문제 처럼 분할이 불가 하다면 불필요.
     // items = items.sort((a, b) => (b[1]/b[0]) - (a[1]/a[0])).filter(item => item[0] <= weight);
