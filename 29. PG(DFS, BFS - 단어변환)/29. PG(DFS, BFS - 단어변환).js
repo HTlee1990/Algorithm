@@ -26,7 +26,7 @@ function solution(begin, target, words) {
     }
   }
 
-  return answer - 1;
+  return answer === 0 ? 0 : answer - 1;
 }
 
 // 단어를 변환할 수 있는 최소 횟수를 리턴.
