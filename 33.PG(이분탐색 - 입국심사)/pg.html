@@ -5,7 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <script src="33.PG(이분탐색 - 입국심사).js"></script>
   </head>
-  <body></body>
+  <body>
+    <h1>event bubbling</h1>
+    <div id="Box">
+      <button id="myButton">Click Me</button>
+    </div>
+  </body>
+  <script>
+    const parent = document.getElementById("Box");
+    parent.addEventListener("click", () => console.log("Box is clicked!"));
+
+    const child = document.getElementById("myButton");
+    child.addEventListener("click", () => {
+      console.log("Button Clicked");
+    });
+  </script>
 </html>
