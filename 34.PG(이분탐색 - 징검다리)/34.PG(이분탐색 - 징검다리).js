@@ -1,3 +1,5 @@
+// https://programmers.co.kr/learn/courses/30/lessons/43236
+
 function solution(distance, rocks, n) {
   rocks.sort((a, b) => a - b);
   let min = 1;
