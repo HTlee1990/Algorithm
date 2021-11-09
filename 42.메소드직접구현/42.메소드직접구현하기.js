@@ -33,4 +33,9 @@ Array.prototype.myReduce = function (callback, initialValue) {
   return answer;
 };
 
-console.log(arr.myReduce((a, c) => a + c));
+[2, 3, 4, 5].myReduce((a, c) => {
+  if (c % 2 !== 0) {
+    a.push(c);
+  }
+  return a;
+}, []);
