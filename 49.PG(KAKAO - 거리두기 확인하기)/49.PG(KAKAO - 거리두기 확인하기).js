@@ -47,7 +47,6 @@ function solution(places) {
 
     for (let [dr, dc] of direction) {
       const [r, c] = [dr + row, dc + col];
-
       if (!isInRoom(r, c)) continue;
       if (input[r][c] === "P") {
         result.unshift(0);
@@ -58,11 +57,7 @@ function solution(places) {
         findCorona(input, [r, c], count + 1, bucket.concat([r, c]));
       }
     }
-
-    // 현재 row, col위치에서 맨해튼거리 2안에서 이동 가능한 곳을 모두 bucket에 담기.
-    // 만약, bucket안에 'P'가 있다면, return false;
-    // if(isInRoom(r, c) && input[r][c] === "P") return false;
-
+    //r, c가 범위내에 있는지 확인하는 함수
     function isInRoom(r, c) {
       if (0 <= r && 0 <= c && r < 5 && c < 5) return true;
       return false;
