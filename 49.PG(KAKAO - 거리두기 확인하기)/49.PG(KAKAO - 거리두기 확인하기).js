@@ -29,7 +29,6 @@ function solution(places) {
     }
     return 1;
   });
-  console.log(answer);
   //거리두기 준수여부 탐색 함수
   var result = [];
   function findCorona(input, [row, col], count, bucket) {
