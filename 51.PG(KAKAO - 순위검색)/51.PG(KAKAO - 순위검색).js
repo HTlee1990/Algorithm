@@ -1,5 +1,5 @@
 //이분탐색 다시 볼것... 부등호 바꾸다가 어쩌다 되버림...
-
+//이분탐색 + 재귀 이용하여 데이터 가공
 function solution(info, query) {
   var answer = []
   const scoreMap = {}
@@ -22,27 +22,29 @@ function solution(info, query) {
     putInfo(input, score, count + 1, bucket.concat("-"))
   }
 
+  //해당 배열에 대해 이분검색하는 함수
   function binarySearch(key2, score2) {
     let scoreArr = scoreMap[key2]
 
     if (scoreArr) {
-      var start = 0
-      var end = scoreArr.length
-
-      while (start < end) {
-        var mid = Math.floor((start + end) / 2)
+      var head = 0
+      var tail = scoreArr.length
+      //
+      while (head < tail) {
+        var mid = Math.floor((head + tail) / 2)
 
         if (scoreArr[mid] >= score2) {
-          end = mid
+          tail = mid
         } else if (scoreArr[mid] < score2) {
-          start = mid + 1
+          head = mid + 1
         }
       }
 
-      return scoreArr.length - start
+      return scoreArr.length - head
     } else return 0
   }
 
+  //info라는 데이터를 내가 원하는 대로 가공 하는 부분.
   for (let i = 0; i < info.length; i++) {
     const information = info[i].split(" ")
     const score = information.pop()
@@ -50,11 +52,12 @@ function solution(info, query) {
   }
   //여기까지 하면, scoreMap에 모든 정보가 정리가 된다.
 
-  //빨리 찾기 위해 정렬하자. 오름차순
+  //빨리 찾기 위해 정렬하자. 내림차순
   for (let arr in scoreMap) {
     scoreMap[arr].sort((a, b) => a - b)
   }
 
+  //' and '를 빈 스트링으로 바꿔주고, split' '으로 나눠준다.
   for (let q of query) {
     let s = q.replace(/ and /g, "").split(" ")
     let scoreBar = +s.pop()
@@ -117,3 +120,26 @@ function solution(info, query) {
 
 // //효율성 테스트 실패... O(n^2)으로 안풀어 진다.
 // //info데이터를 가공해서 점수로 나누어 놓는다면?  => query에서 해당 점수부분의 info만 탐색 할 수 있도록.(100단위로?)
+
+let map = { test: [100, 200, 250, 250, 300, 400, 500] }
+
+function binarySearch(key2, score2) {
+  let scoreArr = map[key2]
+
+  if (scoreArr) {
+    var head = 0
+    var tail = scoreArr.length
+    //head가 tail보다 작을때에만 작동.
+    while (head < tail) {
+      var mid = Math.floor((head + tail) / 2)
+
+      if (scoreArr[mid] >= score2) {
+        tail = mid
+      } else if (scoreArr[mid] < score2) {
+        head = mid + 1
+      }
+    }
+
+    return scoreArr.length - head
+  } else return 0
+}
