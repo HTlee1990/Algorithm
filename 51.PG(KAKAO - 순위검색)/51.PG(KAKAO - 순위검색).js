@@ -121,9 +121,10 @@ function solution(info, query) {
 // //효율성 테스트 실패... O(n^2)으로 안풀어 진다.
 // //info데이터를 가공해서 점수로 나누어 놓는다면?  => query에서 해당 점수부분의 info만 탐색 할 수 있도록.(100단위로?)
 
-let map = { test: [100, 200, 250, 250, 300, 400, 500] }
+//따로 분리해서 이분탐색을 다시 구현해봤다.
+let map22 = { test: [100, 200, 250, 250, 300, 400, 500] }
 
-function binarySearch(key2, score2) {
+function binarySearch22(key2, score2) {
   let scoreArr = map[key2]
 
   if (scoreArr) {
