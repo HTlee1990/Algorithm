@@ -11,6 +11,7 @@ const sudoku = function (board) {
     [6, 6, 6, 7, 7, 7, 8, 8, 8],
     [6, 6, 6, 7, 7, 7, 8, 8, 8],
   ]
+  //박스 넘버 구하기
   const getBoxNum = (row, col) => boxes[row][col]
 
   const blanks = []
@@ -71,7 +72,7 @@ const sudoku = function (board) {
     }
     return false
   }
-
+  //재귀 돌리기
   aux(0, blanks, board)
   return board
 }
