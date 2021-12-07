@@ -57,7 +57,7 @@ const sudoku = function (board) {
 
   const aux = (idx, blanks, board) => {
     if (idx === blanks.length) {
-      return true
+      return 1
     }
 
     const [row, col] = blanks[idx]
@@ -65,12 +65,12 @@ const sudoku = function (board) {
       if (isValid(row, col, num) === true) {
         toggleNum(row, col, num)
         if (aux(idx + 1, blanks, board) === true) {
-          return true
+          return 1
         }
         toggleNum(row, col, num)
       }
     }
-    return false
+    return 0
   }
   //재귀 돌리기
   aux(0, blanks, board)
