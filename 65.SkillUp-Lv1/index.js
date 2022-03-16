@@ -48,5 +48,6 @@ function solution(board, moves) {
       }
     }
   });
+  console.log("check");
   return kakaoDoll.poped;
 }
