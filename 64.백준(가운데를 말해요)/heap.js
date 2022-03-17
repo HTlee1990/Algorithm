@@ -1,16 +1,29 @@
-// let input = require("fs").readFileSync("eg.txt").toString().trim().split("\n");
-// let input = require("fs").readFileSync("/dev/stdin").toString().split("\n");
-//출력시, 한줄에 하나씩 말해야 하는 수를 출력해야 한다.
-// const N = +input.shift();
-// console.log("input is ", input);
-const input = ["1", "5", "2", "10", "-99", "7", "5"];
+// let input = require("fs")
+//   .readFileSync("/dev/stdin")
+//   .toString()
+//   .trim()
+//   .split("\n");
+
 class Heap {
   constructor(func) {
     this.heap = [];
     this.func = func;
+    //만약, func을 입력 받지 못했다면, maxHeap으로 만든다.
     if (func === undefined) {
       this.func = (a, b) => a - b;
     }
+  }
+  removeTop() {
+    if (this.size() === 0) return null;
+    //루트 노드와 마지막 자식노드를 스왑하고
+    this.swap(0, this.size() - 1);
+    //마지막 노드를 삭제한다.
+    const deleted = this.heap.pop();
+    //루트노드부터 아래로 다시 정렬해줘야 한다.
+    if (this.size() > 1) {
+      this.downHeap(0);
+    }
+    return deleted;
   }
   parent(index) {
     return Math.floor((index - 1) / 2);
@@ -26,14 +39,20 @@ class Heap {
     return this.heap.length;
   }
 
-  swap(idx1, idx2) {
-    [this.heap[idx1], this.heap[idx2]] = [this.heap[idx2], this.heap[idx1]];
+  swap(x, y) {
+    let tmp = this.heap[x];
+    this.heap[x] = this.heap[y];
+    this.heap[y] = tmp;
   }
   hasChild(pos) {
-    return pos * 2 + 1 < this.size();
+    // const [left, len] = [this.left(pos), this.size()];
+    if (this.left(pos) < this.size()) {
+      return true;
+    }
+    return false;
   }
   hasRight(pos) {
-    if (pos * 2 + 2 < this.size()) return true;
+    if (this.right(pos) < this.size()) return true;
     else return false;
   }
   //Heap을 root부터 아래로 내려가면서 정렬
@@ -45,11 +64,16 @@ class Heap {
       let right = this.right(pos);
       //func에 따라 작은 값 혹은 큰 값을 찾는다.
       let target;
+      //만약, 오른쪽 노드가 없다면, 왼쪽노드밖에 없는 것이니, 바로 left
       if (!this.hasRight(pos)) target = left;
-      else if (this.func(this.heap[left], this.heap[right]) >= 0) target = left;
+      //maxHeap인 경우, left가 더 클 경우 left를, minHeap인 경우, left가 더 작을 경우 left
+      else if (this.func(this.heap[left], this.heap[right]) > 0) target = left;
+      //나머지 경우는 right
       else target = right;
 
+      //target과 parent 노드인 pos를 비교
       //만약, parent가 더 작다면, swap 실행하고, 자식노드를 부모노드로
+      // console.log(this.func(this.heap[target], this.heap[pos]) >= 0);
       if (this.func(this.heap[target], this.heap[pos]) >= 0) {
         this.swap(pos, target);
         pos = target;
@@ -62,12 +86,11 @@ class Heap {
   upHeap(pos) {
     while (pos !== 0) {
       let p = this.parent(pos);
-      if (this.func(this.heap[p], this.heap[pos]) < 0) {
-        this.swap(pos, p);
-        pos = p;
-      } else {
+      if (this.func(this.heap[p], this.heap[pos]) > 0) {
         break;
       }
+      this.swap(p, pos);
+      pos = p;
     }
   }
 
@@ -76,101 +99,123 @@ class Heap {
     // 1-1. 힙의 root 노드에 넣는다.
     this.heap.unshift(value);
     this.downHeap(0);
-    // 1-2. 새로운 노드를 마지막 요소로 넣는 경우
+    // 1-2. 새로운 노드를 마지막 요소로 넣는 방법
     // this.heap.push(value);
     // this.upHeap(this.size() - 1);
   }
+
+  top() {
+    return this.heap[0];
+  }
 }
 
-const h = new Heap((a, b) => b - a);
+// function solution() {
+//   const maxQ = new Heap();
+//   const minQ = new Heap((a, b) => b - a);
 
-input.forEach((el) => {
-  h.insert(+el);
-});
-console.log(h.heap);
-
-// class Heap {
-//   constructor() {
-//     //0번째 index는 필요 없는 요소
-//     this.minHeap = [];
-//     this.maxHeap = [];
-//   }
-//   //부모노드 인덱스 구하는 메소드
-//   getParent(index) {
-//     return Math.floor(index / 2);
-//   }
-//   getChild(index, arr) {
-//     const [left, right] = [index * 2 + 1, index * 2 + 2];
-//     if (left > arr.length - 1) return undefined;
-//     //left만 있고, right는 없는 경우 바로 return left
-//     if (right > arr.length - 1) return left;
-//     return arr[left] > arr[right] ? left : right;
-//   }
-//   getSmaller(index, arr) {
-//     const [left, right] = [index * 2 + 1, index * 2 + 2];
-//     if (left > arr.length - 1) return undefined;
-//     if (right > arr.length - 1) return left;
-//     return arr[left] < arr[right] ? left : right;
-//   }
-
-//   //부모 노드와 자식노드 비교하여 스왑 until 더이상 자식 노드가 크지 않을 때 까지.
-//   maxHeapify(parent) {
-//     //sort maxHeap
-//     //1. 자식노드 중 큰 값을 root노드와 비교
-//     let biggerChild = this.getChild(parent, this.maxHeap);
-//     //2. 자식노드가 부모노드보다 크다면 스왑, until it doens't
-//     while (this.maxHeap[parent] < this.maxHeap[biggerChild]) {
-//       //2-1. 스왑
-//       [this.maxHeap[parent], this.maxHeap[biggerChild]] = [
-//         this.maxHeap[biggerChild],
-//         this.maxHeap[parent],
-//       ];
-//       //2-2. 자식노드를 부모노드로, 자식노드 index는 새로 구하기
-//       [parent, biggerChild] = [
-//         biggerChild,
-//         this.getChild(biggerChild, this.maxHeap),
-//       ];
+//   input.forEach((el) => {
+//     el = +el;
+//     //만약, maxQ의 사이즈가 이미 minQ보다 크다면, 무조건 minQ에 insert
+//     if (maxQ.size() > minQ.size()) {
+//       minQ.insert(el);
 //     }
-//   }
-//   minHeapify(parent) {
-//     let smallChild = this.getSmaller(parent, this.minHeap);
-//     //2. 자식노드가 부모노드보다 크다면 스왑, until it doens't
-//     while (this.minHeap[parent] > this.minHeap[smallChild]) {
-//       //2-1. 스왑
-//       [this.minHeap[parent], this.minHeap[smallChild]] = [
-//         this.minHeap[smallChild],
-//         this.minHeap[parent],
-//       ];
-//       //2-2. 자식노드를 부모노드로, 자식노드 index는 새로 구하기
-//       [parent, smallChild] = [
-//         smallChild,
-//         this.getSmaller(smallChild, this.minHeap),
-//       ];
+//     //나머지 경우는 모두 maxQ insert
+//     else {
+//       maxQ.insert(el);
 //     }
-//   }
-//   //heap에 요소를 push해주는 메소드
-//   insertEl(el) {
-//     //1. maxHeap.length 는 minHeap보다 1크거나 같다. 즉, 두 길이의 차가 1보다 크다면, minHeap에 넣자.
-//     if (this.maxHeap.length - this.minHeap.length >= 1) {
-//       this.minHeap.unshift(el);
-//     } else {
-//       this.maxHeap.unshift(el);
+//     //각 요소의 탑 비교
+//     //minQ의 탑은 항상 maxQ의 탑보다 커야 한다.
+//     const minTop = minQ.top();
+//     const maxTop = maxQ.top();
+//     if (minQ.size() === 0) {
+//       if (minTop <= maxTop) {
+//         minQ.removeTop();
+//         maxQ.removeTop();
+//         minQ.insert(maxTop);
+//         maxQ.insert(minTop);
+//       }
+//       //정렬이 끝났다면, maxQ의 탑을 찍어준다.
 //     }
-//     //2. minHeap의 모든 요소는 maxHeap의 탑 보다 크다. 즉, minHeap의 탑은 maxHeap의 탑보다 항상 커야 한다.
-//     //   만약 작다면,
-//     if (this.maxHeap[0] > this.minHeap[0]) {
-//       // 스왑
-//       [this.maxHeap[0], this.minHeap[0]] = [this.minHeap[0], this.maxHeap[0]];
-//     }
-//     //3.heapifiy를 두 배열에 모두 시행.
-//     this.maxHeapify(0);
-//     this.minHeapify(0);
-//     console.log(this.maxHeap[0]);
-//   }
+//     console.log(maxQ.top());
+//   });
 // }
+function solution(input) {
+  let maxQueue = new Heap();
+  let minQueue = new Heap((a, b) => {
+    return b - a;
+  });
 
-// const h = new Heap();
+  const result = [];
+  for (let i = 1; i < input.length; i++) {
+    let num = parseInt(input[i]);
+    if (minQueue.size() < maxQueue.size()) {
+      minQueue.insert(num);
+    } else {
+      maxQueue.insert(num);
+    }
+    if (minQueue.size() !== 0) {
+      if (minQueue.top() < maxQueue.top()) {
+        let minMin = minQueue.removeTop();
+        let maxMin = maxQueue.removeTop();
+        minQueue.insert(maxMin);
+        maxQueue.insert(minMin);
+      }
+    }
+    // result.push(maxQueue.top());
+    console.log(maxQueue.top());
+  }
+  // console.log(result);
+}
 
-// input.forEach((el) => {
-//   h.insertEl(+el);
-// });
+// solution(input);
+// //test코드
+(() => {
+  // if (!test) return;
+  console.time("Array Insert");
+  solution([9, 1, -2, 3, -4, 5, -6, 7, -8, 9]);
+  console.timeEnd("Array Insert");
+  console.log("--");
+  console.time("Array Insert");
+  solution([9, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  console.timeEnd("Array Insert");
+  console.log("--");
+  console.time("Array Insert");
+  solution([9, 9, 8, 7, 6, 5, 4, 3, 2, 1]);
+  console.timeEnd("Array Insert");
+  console.log("--");
+  console.time("Array Insert");
+  solution([5, 1, -1, 1, -1, 1]);
+  console.timeEnd("Array Insert");
+  console.log("--");
+  console.time("Array Insert");
+  solution([5, 1, 0, 2, -1, 3]);
+  console.timeEnd("Array Insert");
+  console.log("--");
+  console.time("Array Insert");
+  solution([5, 4, 0, 3, 1, 2]);
+  console.timeEnd("Array Insert");
+  console.log("--");
+  console.time("Array Insert");
+  solution([1, 100]);
+  console.timeEnd("Array Insert");
+  console.log("--");
+  console.time("Array Insert");
+  solution([5, 1, 1, 1, 1, 1]);
+  console.timeEnd("Array Insert");
+  console.log("--");
+  console.time("Array Insert");
+  solution([7, 1, 5, 2, 10, -99, 7, 5]);
+  console.timeEnd("Array Insert");
+  console.log("--");
+  console.time("Array Insert");
+  solution([10, 1, 1, -1, -1, -1, 1, 1, 1, -1, -1]);
+  console.timeEnd("Array Insert");
+  console.log("--");
+  console.time("Array Insert");
+  solution([6, -1, 1, 2, -2, -3, 3]);
+  console.timeEnd("Array Insert");
+  console.log("--");
+  console.time("Array Insert");
+  solution([6, 5, -5, 4, -4, 3, -3]);
+  console.timeEnd("Array Insert");
+})();
