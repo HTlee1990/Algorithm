@@ -1,3 +1,42 @@
+//5개월 뒤 코드
+function solution(begin, target, words) {
+  var answer = Infinity;
+  let visited = new Array(words.length).fill(0);
+  //1글자만 다른 단어인지 확인하는 함수(변경 가능한 단어인지 확인)
+  function isChangable(word1, word2) {
+    let count = 0;
+    for (let i = 0; i < word1.length; i++) {
+      if (word1[i] !== word2[i]) count++;
+      if (count > 1) return false;
+    }
+    if (count === 1) return true;
+  }
+  // 변환 불가한 경우 return 0
+  if (words.indexOf(target) === -1) return 0;
+
+  let copied = visited.slice();
+  dfs(begin, copied, 0);
+
+  function dfs(cur, visited, count) {
+    if (cur === target) {
+      if (answer > count) {
+        answer = count;
+      }
+      return;
+    }
+    for (let i = 0; i < words.length; i++) {
+      if (visited[i]) continue;
+      else {
+        if (isChangable(cur, words[i])) {
+          visited[i] = 1;
+          dfs(words[i], visited.slice(), count + 1);
+        }
+      }
+    }
+  }
+  return answer;
+}
+
 function solution(begin, target, words) {
   let answer = 0;
   let visited = new Array(words.length).fill(0);
