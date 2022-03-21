@@ -1,3 +1,45 @@
+//5개월 뒤 코드
+function solution(tickets) {
+  var answer = [];
+  //사용된 티켓인지 체크
+  let isVisited = new Array(tickets.length).fill(0);
+  //모든 도시를 방문하는 경우만 주어짐
+  //경로를 순서대로 answer에 담아 리턴
+  //경로가 2개 이상일 수도 있다. 이 경우, 알파벳 순서가 앞서는 경로를 리턴.먼저 sort를 하고 진행할까?
+  //항상 ICN에서 출발, 출발지가 ICN인 티켓이 두개이상일 수도 있다.
+  tickets.sort((a, b) => {
+    if (a[1] > b[1]) return 1;
+    if (a[1] < b[1]) return -1;
+    return 0;
+  });
+  tickets.forEach((el, idx) => {
+    //출발지가 ICN이라면 dfs 실행
+    if (el[0] === "ICN") {
+      let copied = isVisited.slice();
+      copied[idx] = 1;
+      dfs(el, copied, ["ICN"], 1);
+    }
+  });
+
+  function dfs([from, to], visited, bucket, count) {
+    if (count === tickets.length) {
+      bucket.push(to);
+      answer.push(bucket);
+      return;
+    }
+    for (let i = 0; i < tickets.length; i++) {
+      if (visited[i]) continue;
+      const next = tickets[i][0];
+      if (to === next) {
+        let copied = visited.slice();
+        copied[i] = 1;
+        dfs(tickets[i], copied, bucket.concat(next), count + 1);
+      }
+    }
+  }
+  return answer[0];
+}
+
 // function solution(tickets) {
 //   const answer = ["ICN"];
 //   const check = new Array(tickets.length).fill(0);
@@ -61,6 +103,14 @@ function solution(tickets) {
       }
     });
   };
+
   DFS(tickets, "ICN", ["ICN"]);
   return answer.sort()[0];
 }
+
+let arr = [];
+arr.sort((a, b) => {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  else return 0;
+});

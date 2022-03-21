@@ -1,0 +1,11 @@
+{
+  "name": "bfs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "30. PG(DFS, BFS - 여행경로).js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
