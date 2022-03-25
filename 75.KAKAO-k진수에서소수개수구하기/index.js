@@ -4,6 +4,7 @@ function solution(n, k) {
 }
 
 //아래코드는 왠지 모르겠지만 계속 테스트 케이스 3개가 실패한다...
+//0이 나오는 케이스를 제대로 체크 하지 못해서 인것 겉다.
 function solution(n, k) {
   var answer = 0;
   const kNum = n
